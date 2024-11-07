@@ -1,4 +1,4 @@
-import { asuncHandler } from "../utils/asyncHandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -20,7 +20,7 @@ const generateAccessAndRerereshTokens = async (userId) => {
   }
 };
 
-const registerUser = asuncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req, res) => {
   const { fullname, email, username, password } = req.body;
   if (
     [fullname, email, username, password].some((field) => field?.trim() === "")
@@ -40,7 +40,7 @@ const registerUser = asuncHandler(async (req, res) => {
     username: username.toLowerCase(),
   });
 
-  const createdUser = await User.findByIdI(user._id).select(
+  const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
   if (!createdUser) {
@@ -50,3 +50,4 @@ const registerUser = asuncHandler(async (req, res) => {
     .status(201)
     .json(new ApiResponse(200, createdUser, "User registerd Successfully"));
 });
+export { registerUser };
